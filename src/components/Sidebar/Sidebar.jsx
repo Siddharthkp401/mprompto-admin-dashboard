@@ -4,21 +4,23 @@ import { FiTool } from "react-icons/fi";
 import { HiOutlineServer } from "react-icons/hi2";
 import { RiMenu2Fill } from "react-icons/ri";
 import { LuSquareUserRound } from "react-icons/lu";
+import { Link, useLocation } from "react-router-dom";
 
 const navItems = [
-  { id: "dashboard", name: "Dashboard", icon: HiOutlineServer },
-  { id: "analytics", name: "Analytics", icon: FiTool },
-  { id: "setup", name: "Setup", icon: CiSettings },
-  { id: "admin", name: "Admin", icon: LuSquareUserRound },
+  {
+    id: "dashboard",
+    name: "Dashboard",
+    icon: HiOutlineServer,
+    path: "/dashboard",
+  },
+  { id: "analytics", name: "Analytics", icon: FiTool, path: "/analytics" },
+  { id: "setup", name: "Setup", icon: CiSettings, path: "/setup" },
+  { id: "admin", name: "Admin", icon: LuSquareUserRound, path: "/admin" },
 ];
 
-export default function Sidebar({
-  collapsed,
-  toggleSidebar,
-  activeTab,
-  setActiveTab,
-}) {
+export default function Sidebar({ collapsed, toggleSidebar }) {
   const [hovering, setHovering] = useState(false);
+  const location = useLocation();
 
   // Determine if sidebar should be expanded
   const isExpanded = !collapsed || hovering;
@@ -50,18 +52,14 @@ export default function Sidebar({
         <ul className="space-y-1">
           {navItems.map((item) => (
             <li key={item.id}>
-              <a
-                href="#"
+              <Link
+                to={item.path}
                 className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg ${
-                  activeTab === item.id
+                  location.pathname.startsWith(item.path)
                     ? "bg-gray-800 text-white"
                     : "text-gray-500 hover:bg-gray-100 transition-colors duration-300"
                 } `}
                 title={!isExpanded ? item.name : ""}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveTab(item.id);
-                }}
               >
                 <item.icon
                   className={`h-5 w-5 ${isExpanded ? "mr-3" : "mx-auto"}`}
@@ -71,7 +69,7 @@ export default function Sidebar({
                     {item.name}
                   </span>
                 )}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
