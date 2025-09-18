@@ -13,6 +13,9 @@ import Admin from "./Tabs/Admin/Admin";
 import Layout from "./components/Layout/Layout";
 import BrandAndProfile from "./Tabs/Admin/components/BrandAndProfile";
 import TeamUserManagement from "./Tabs/Admin/components/TeamAndUserManagement";
+import SyncData from "./Tabs/ManageCatalog/SyncData";
+import ManageProducts from "./Tabs/ManageCatalog/ManageProducts";
+import CurationQualityControl from "./Tabs/ManageCatalog/CurationQualityControl";
 
 function App() {
   return (
@@ -65,6 +68,30 @@ function App() {
             element={
               <Layout activeTab="admin">
                 <TeamUserManagement />
+              </Layout>
+            }
+          />
+          <Route
+            path="/manage-catalog/sync"
+            element={
+              <Layout activeTab="manage-catalog">
+                <SyncData />
+              </Layout>
+            }
+          />
+          <Route
+            path="/manage-catalog/manage-products"
+            element={
+              <Layout activeTab="manage-catalog">
+                <ManageProducts />
+              </Layout>
+            }
+          />
+          <Route
+            path="/manage-catalog/curation-quality-control"
+            element={
+              <Layout activeTab="manage-catalog">
+                <CurationQualityControl />
               </Layout>
             }
           />

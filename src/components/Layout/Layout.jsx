@@ -27,6 +27,8 @@ export default function Layout({ children, activeTab, setActiveTab }) {
                   ? "Dashboard"
                   : activeTab === "analytics"
                   ? "Analytics"
+                  : activeTab === "manage-catalog"
+                  ? "Manage Catalog"
                   : activeTab === "setup"
                   ? "Setup"
                   : "Admin"}

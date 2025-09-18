@@ -1,0 +1,11 @@
+Product ID,Product Name,Category,Price,Description,Stock Quantity,Brand,SKU,Image URL,Weight,Dimensions
+PROD001,Wireless Bluetooth Headphones,Electronics,99.99,High-quality wireless headphones with noise cancellation,50,AudioTech,ATH-WB001,https://example.com/images/headphones.jpg,0.5kg,20x15x8cm
+PROD002,Cotton T-Shirt,Fashion,24.99,Comfortable cotton t-shirt in various colors,100,FashionBrand,FB-TS001,https://example.com/images/tshirt.jpg,0.2kg,Medium
+PROD003,Organic Coffee Beans,Food,15.99,Premium organic coffee beans from Colombia,75,CoffeeCo,CC-ORG001,https://example.com/images/coffee.jpg,0.5kg,250g bag
+PROD004,Running Shoes,Footwear,129.99,Lightweight running shoes with cushioning,30,SportMax,SM-RS001,https://example.com/images/shoes.jpg,0.8kg,Size 9
+PROD005,Skincare Moisturizer,Health,45.99,Hydrating moisturizer for all skin types,60,BeautyCare,BC-MOIST001,https://example.com/images/moisturizer.jpg,0.1kg,50ml
+PROD006,Energy Drink,Beverages,3.99,Refreshing energy drink with natural ingredients,200,EnergyPlus,EP-ED001,https://example.com/images/energydrink.jpg,0.25kg,250ml
+PROD007,Leather Wallet,Accessories,39.99,Genuine leather wallet with multiple card slots,40,LeatherCraft,LC-WAL001,https://example.com/images/wallet.jpg,0.15kg,10x7x2cm
+PROD008,Protein Powder,Health,49.99,High-quality whey protein powder for fitness,25,FitLife,FL-PP001,https://example.com/images/protein.jpg,0.9kg,1kg container
+PROD009,Smart Watch,Electronics,199.99,Fitness tracking smartwatch with heart rate monitor,15,TechWear,TW-SW001,https://example.com/images/smartwatch.jpg,0.3kg,42mm
+PROD010,Denim Jeans,Fashion,79.99,Classic blue denim jeans with stretch,80,DenimCo,DC-JEANS001,https://example.com/images/jeans.jpg,0.6kg,Size 32
