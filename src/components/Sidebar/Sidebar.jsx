@@ -16,13 +16,13 @@ import { TbChecks as CurationIcon } from "react-icons/tb";
 import { Link, useLocation } from "react-router-dom";
 
 const navItems = [
-  {
-    id: "dashboard",
-    name: "Dashboard",
-    icon: HiOutlineServer,
-    path: "/dashboard",
-  },
-  { id: "analytics", name: "Analytics", icon: FiTool, path: "/analytics" },
+  // {
+  //   id: "dashboard",
+  //   name: "Dashboard",
+  //   icon: HiOutlineServer,
+  //   path: "/dashboard",
+  // },
+  // { id: "analytics", name: "Analytics", icon: FiTool, path: "/analytics" },
   {
     id: "manage-catalog",
     name: "Manage Catalog",
@@ -49,8 +49,8 @@ const navItems = [
       },
     ],
   },
-  { id: "setup", name: "Setup", icon: CiSettings, path: "/setup" },
-  { id: "admin", name: "Admin", icon: LuSquareUserRound, path: "/admin" },
+  // { id: "setup", name: "Setup", icon: CiSettings, path: "/setup" },
+  // { id: "admin", name: "Admin", icon: LuSquareUserRound, path: "/admin" },
 ];
 
 export default function Sidebar({ collapsed, toggleSidebar }) {

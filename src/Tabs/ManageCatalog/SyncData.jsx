@@ -1,31 +1,40 @@
 import { useState } from "react";
 import { LuDownload as DownloadIcon } from "react-icons/lu";
+import { CiFileOn as FileIcon } from "react-icons/ci";
+import { IoIosCheckmarkCircleOutline as CheckIcon } from "react-icons/io";
+import { RxCross2 as XIcon } from "react-icons/rx";
 import Card from "../../components/ui/Card";
 import Button from "../../components/ui/Button";
+import MapData from "./MapData";
 
 export default function SyncData() {
   const [urlType, setUrlType] = useState("single");
+  const [activeStep, setActiveStep] = useState(1);
   const [url, setUrl] = useState("");
   const [dragActive, setDragActive] = useState(false);
+  const [csvFile, setCsvFile] = useState(null);
 
   const steps = [
     {
       id: 1,
       title: "Choose Sync Method",
       subtitle: "Select how you want to sync your data",
-      active: true,
+      active: activeStep === 1,
+      actionTitle: "Next: Map Data",
     },
     {
       id: 2,
       title: "Map Data",
       subtitle: "Match your fields with the catalog format",
-      active: false,
+      active: activeStep === 2,
+      actionTitle: "Sync Now",
     },
     {
       id: 3,
       title: "Sync Completed",
       subtitle: "All records are now up to date",
-      active: false,
+      active: activeStep === 3,
+      actionTitle: "Process Now",
     },
   ];
 
@@ -45,26 +54,23 @@ export default function SyncData() {
     setDragActive(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      // Handle file upload
-      console.log("File dropped:", e.dataTransfer.files[0]);
+      setCsvFile(e.dataTransfer.files[0]);
     }
   };
 
   const handleFileSelect = (e) => {
     if (e.target.files && e.target.files[0]) {
-      // Handle file selection
-      console.log("File selected:", e.target.files[0]);
+      setCsvFile(e.target.files[0]);
     }
   };
 
   const handleNext = () => {
-    console.log("Next clicked");
-    // Handle next step logic
+    setActiveStep(activeStep + 1);
   };
 
   const handleCancel = () => {
-    console.log("Cancel clicked");
-    // Handle cancel logic
+    setActiveStep(1);
+
   };
 
   const handleSampleCSVDownload = () => {
@@ -75,6 +81,19 @@ export default function SyncData() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const formatFileSize = (size) => {
+    if (size < 1024) {
+      return `${size} B`;
+    }
+    if (size < 1024 * 1024) {
+      return `${(size / 1024).toFixed(2)} KB`;
+    }
+    if (size < 1024 * 1024 * 1024) {
+      return `${(size / (1024 * 1024)).toFixed(2)} MB`;
+    }
+    return `${(size / (1024 * 1024 * 1024)).toFixed(2)} GB`;
   };
 
   return (
@@ -127,115 +146,146 @@ export default function SyncData() {
           ))}
         </div>
 
-        {/* Upload CSV Section */}
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-800">
-              Upload a CSV file
-            </h2>
-            <Button
-              onClick={handleSampleCSVDownload}
-              className="flex gap-2 text-center items-center bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 text-sm"
-            >
-              Sample CSV
-              <DownloadIcon className="h-4 w-4 mr-2 text-[#188FB7]" />
-            </Button>
-          </div>
-
-          <Card>
-            <div
-              className={`p-12 border-2 border-dashed rounded-lg text-center ${
-                dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
-              }`}
-              onDragEnter={handleDrag}
-              onDragLeave={handleDrag}
-              onDragOver={handleDrag}
-              onDrop={handleDrop}
-            >
-              <div className="space-y-2">
-                <p className="text-gray-600">
-                  Drag & Drop or{" "}
-                  <label className="text-[#188FB7] cursor-pointer hover:text-blue-600">
-                    Choose file
-                    <input
-                      type="file"
-                      className="hidden"
-                      accept=".csv"
-                      onChange={handleFileSelect}
-                    />
-                  </label>{" "}
-                  to upload
-                </p>
-                <p className="text-sm text-gray-500">Max size: 10mb</p>
+        {activeStep === 1 && (
+          <>
+            {/* Upload CSV Section */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                {csvFile ? (
+                  <h2 className="text-xl font-semibold text-[#19BE3D] flex items-center gap-2">
+                    <CheckIcon className="h-6 w-6 text-[#19BE3D]" />
+                    File Uploaded Successfully
+                  </h2>
+                ) : (
+                  <h2 className="text-xl font-semibold text-gray-800">
+                    Upload a CSV file
+                  </h2>
+                )}
+                <Button
+                  onClick={handleSampleCSVDownload}
+                  className="flex gap-2 text-center items-center bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 text-sm"
+                >
+                  Sample CSV
+                  <DownloadIcon className="h-4 w-4 mr-2 text-[#188FB7]" />
+                </Button>
               </div>
+
+              <Card>
+                <div
+                  className={`p-12 border-2 border-dashed rounded-lg text-center ${
+                    dragActive
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-gray-300"
+                  }`}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                >
+                  <div className="space-y-2">
+                    <p className="text-gray-600">
+                      Drag & Drop or{" "}
+                      <label className="text-[#188FB7] cursor-pointer hover:text-blue-600">
+                        Choose file
+                        <input
+                          type="file"
+                          className="hidden"
+                          accept=".csv"
+                          onChange={handleFileSelect}
+                        />
+                      </label>{" "}
+                      to upload
+                    </p>
+                    <p className="text-sm text-gray-500">Max size: 10mb</p>
+                  </div>
+                </div>
+              </Card>
+              {csvFile && (
+                <div className="text-gray-700 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <FileIcon className="h-10 w-10 mr-2 text-[#188FB7] bg-[#1994BE26] rounded-full p-2" />
+                    <div className="flex flex-col">
+                      <p className="font-bold">{csvFile.name}</p>
+                      <p>Size: {formatFileSize(csvFile.size)}</p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => setCsvFile(null)}
+                    className="text-white"
+                  >
+                    <XIcon className="h-6 w-6 text-[#E41E2E]" />
+                  </Button>
+                </div>
+              )}
             </div>
-          </Card>
-        </div>
-
-        {/* API Section */}
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-800">
-            API (Connect via API for real-time sync)
-          </h2>
-          <div>
-            <Button className="bg-[#188FB7] hover:bg-[#188FB7] text-white">
-              Configure API
-            </Button>
-          </div>
-        </div>
-
-        {/* URL Section */}
-        <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-800">
-            URL (Provide a URL)
-          </h2>
-
-          <div className="space-y-4">
-            <div className="flex items-center">
-              <p className="text-gray-700">
-                What is the URL of your external support content?
-              </p>
-
-              {/* URL Type Toggle */}
-              <div className="flex items-center space-x-2 ml-auto">
-                <button
-                  className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                    urlType === "single"
-                      ? "bg-black text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                  }`}
-                  onClick={() => setUrlType("single")}
-                >
-                  Single url
-                </button>
-                <button
-                  className={`px-4 py-2 rounded-lg text-sm font-medium ${
-                    urlType === "multiple"
-                      ? "bg-black text-white"
-                      : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                  }`}
-                  onClick={() => setUrlType("multiple")}
-                >
-                  Multiple url
-                </button>
+            {/* API Section */}
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold text-gray-800">
+                API (Connect via API for real-time sync)
+              </h2>
+              <div>
+                <Button className="bg-[#188FB7] hover:bg-[#188FB7] text-white">
+                  Configure API
+                </Button>
               </div>
             </div>
 
-            {/* URL Input */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Enter URL
-              </label>
-              <input
-                type="url"
-                placeholder="Example: https://myapi.example.com/sync/catalog"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                value={url}
-                onChange={(e) => setUrl(e.target.value)}
-              />
+            {/* URL Section */}
+            <div className="space-y-4">
+              <h2 className="text-xl font-semibold text-gray-800">
+                URL (Provide a URL)
+              </h2>
+
+              <div className="space-y-4">
+                <div className="flex items-center">
+                  <p className="text-gray-700">
+                    What is the URL of your external support content?
+                  </p>
+
+                  {/* URL Type Toggle */}
+                  <div className="flex items-center space-x-2 ml-auto">
+                    <button
+                      className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                        urlType === "single"
+                          ? "bg-black text-white"
+                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      }`}
+                      onClick={() => setUrlType("single")}
+                    >
+                      Single url
+                    </button>
+                    <button
+                      className={`px-4 py-2 rounded-lg text-sm font-medium ${
+                        urlType === "multiple"
+                          ? "bg-black text-white"
+                          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                      }`}
+                      onClick={() => setUrlType("multiple")}
+                    >
+                      Multiple url
+                    </button>
+                  </div>
+                </div>
+
+                {/* URL Input */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Enter URL
+                  </label>
+                  <input
+                    type="url"
+                    placeholder="Example: https://myapi.example.com/sync/catalog"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    value={url}
+                    onChange={(e) => setUrl(e.target.value)}
+                  />
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </>
+        )}
+
+        {activeStep === 2 && <MapData />}
       </div>
 
       {/* Sticky Action Buttons */}
@@ -245,13 +295,13 @@ export default function SyncData() {
             onClick={handleCancel}
             className="px-8 py-2 border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-lg"
           >
-            Cancel
+            {activeStep === 1 ? "Cancel" : "Previous"}
           </Button>
           <Button
             onClick={handleNext}
             className="px-8 py-2 bg-[#188FB7] hover:bg-[#188FB7] text-white rounded-lg"
           >
-            Next: Map Data
+            {steps[activeStep - 1].actionTitle}
           </Button>
         </div>
       </div>

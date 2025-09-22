@@ -22,7 +22,7 @@ function App() {
     <Router>
       <div className="min-h-screen min-w-[100dvw] bg-white">
         <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/" element={<Navigate to="/manage-catalog/sync" replace />} />
           <Route
             path="/dashboard"
             element={
