@@ -3,9 +3,11 @@ import { LuDownload as DownloadIcon } from "react-icons/lu";
 import { CiFileOn as FileIcon } from "react-icons/ci";
 import { IoIosCheckmarkCircleOutline as CheckIcon } from "react-icons/io";
 import { RxCross2 as XIcon } from "react-icons/rx";
+import Papa from "papaparse";
 import Card from "../../components/ui/Card";
 import Button from "../../components/ui/Button";
 import MapData from "./MapData";
+import SyncCompleted from "./SyncCompleted";
 
 export default function SyncData() {
   const [urlType, setUrlType] = useState("single");
@@ -13,6 +15,8 @@ export default function SyncData() {
   const [url, setUrl] = useState("");
   const [dragActive, setDragActive] = useState(false);
   const [csvFile, setCsvFile] = useState(null);
+  const [csvColumns, setCsvColumns] = useState([]);
+  const [csvFirstRowData, setCsvFirstRowData] = useState({});
 
   const steps = [
     {
@@ -21,6 +25,7 @@ export default function SyncData() {
       subtitle: "Select how you want to sync your data",
       active: activeStep === 1,
       actionTitle: "Next: Map Data",
+      disableAction: !csvFile,
     },
     {
       id: 2,
@@ -28,6 +33,7 @@ export default function SyncData() {
       subtitle: "Match your fields with the catalog format",
       active: activeStep === 2,
       actionTitle: "Sync Now",
+      disableAction: false,
     },
     {
       id: 3,
@@ -35,6 +41,7 @@ export default function SyncData() {
       subtitle: "All records are now up to date",
       active: activeStep === 3,
       actionTitle: "Process Now",
+      disableAction: false,
     },
   ];
 
@@ -48,19 +55,53 @@ export default function SyncData() {
     }
   };
 
+  const parseCSVFile = (file) => {
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: (results) => {
+        if (results.errors.length > 0) {
+          console.error("CSV parsing errors:", results.errors);
+          alert("Error parsing CSV file. Please check the file format.");
+          return;
+        }
+
+        // Extract column headers from the first row
+        const headers = results.meta.fields || [];
+        const columns = headers.map((header) => ({
+          value: header,
+          label: header,
+        }));
+
+        // Extract first row data (excluding header)
+        const firstRowData = results.data.length > 0 ? results.data[0] : {};
+
+        setCsvColumns(columns);
+        setCsvFirstRowData(firstRowData);
+        setCsvFile(file);
+      },
+      error: (error) => {
+        console.error("CSV parsing error:", error);
+        alert(
+          "Error reading CSV file. Please make sure it's a valid CSV file."
+        );
+      },
+    });
+  };
+
   const handleDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      setCsvFile(e.dataTransfer.files[0]);
+      parseCSVFile(e.dataTransfer.files[0]);
     }
   };
 
   const handleFileSelect = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setCsvFile(e.target.files[0]);
+      parseCSVFile(e.target.files[0]);
     }
   };
 
@@ -69,8 +110,7 @@ export default function SyncData() {
   };
 
   const handleCancel = () => {
-    setActiveStep(1);
-
+    setActiveStep(activeStep - 1);
   };
 
   const handleSampleCSVDownload = () => {
@@ -210,7 +250,11 @@ export default function SyncData() {
                     </div>
                   </div>
                   <Button
-                    onClick={() => setCsvFile(null)}
+                    onClick={() => {
+                      setCsvFile(null);
+                      setCsvColumns([]);
+                      setCsvFirstRowData({});
+                    }}
                     className="text-white"
                   >
                     <XIcon className="h-6 w-6 text-[#E41E2E]" />
@@ -285,7 +329,13 @@ export default function SyncData() {
           </>
         )}
 
-        {activeStep === 2 && <MapData />}
+        {activeStep === 2 && (
+          <MapData csvColumns={csvColumns} csvFirstRowData={csvFirstRowData} />
+        )}
+
+        {activeStep === 3 && (
+          <SyncCompleted />
+        )}
       </div>
 
       {/* Sticky Action Buttons */}
@@ -298,8 +348,13 @@ export default function SyncData() {
             {activeStep === 1 ? "Cancel" : "Previous"}
           </Button>
           <Button
+            disabled={steps[activeStep - 1].disableAction}
             onClick={handleNext}
-            className="px-8 py-2 bg-[#188FB7] hover:bg-[#188FB7] text-white rounded-lg"
+            className={`px-8 py-2 bg-[#188FB7] hover:bg-[#188FB7] text-white rounded-lg ${
+              steps[activeStep - 1].disableAction
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }`}
           >
             {steps[activeStep - 1].actionTitle}
           </Button>
