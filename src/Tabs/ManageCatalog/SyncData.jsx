@@ -333,13 +333,11 @@ export default function SyncData() {
           <MapData csvColumns={csvColumns} csvFirstRowData={csvFirstRowData} />
         )}
 
-        {activeStep === 3 && (
-          <SyncCompleted />
-        )}
+        {activeStep === 3 && <SyncCompleted />}
       </div>
 
       {/* Sticky Action Buttons */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-4 shadow-lg">
+      <div className="fixed bottom-0 left-[260px] right-0 bg-white border-t border-gray-200 px-6 py-4 shadow-lg">
         <div className="max-w-7xl mx-auto flex justify-center space-x-4">
           <Button
             onClick={handleCancel}

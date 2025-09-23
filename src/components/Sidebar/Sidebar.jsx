@@ -74,12 +74,9 @@ export default function Sidebar({ collapsed, toggleSidebar }) {
     }));
   };
 
-  // Width class based on sidebar state
-  const widthClass = isExpanded ? "w-48" : "w-16";
-
   return (
     <div
-      className={`${widthClass} bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out`}
+      className={`max-w-[260px] bg-white border-r border-gray-200 flex flex-col transition-all duration-300 ease-in-out`}
       onMouseEnter={() => setHovering(true)}
       onMouseLeave={() => setHovering(false)}
     >
@@ -97,7 +94,7 @@ export default function Sidebar({ collapsed, toggleSidebar }) {
           </div>
         )}
       </div>
-      <nav className="flex-1 pt-4 overflow-hidden">
+      <nav className="flex-1 pt-4 overflow-hidden px-4">
         <ul className="space-y-1">
           {navItems.map((item) => (
             <li key={item.id}>
@@ -109,10 +106,10 @@ export default function Sidebar({ collapsed, toggleSidebar }) {
                 >
                   <button
                     onClick={() => toggleMenu(item.id)}
-                    className={`w-full flex items-center justify-between px-4 py-3 text-sm font-medium rounded-lg ${
+                    className={`w-full flex items-center justify-between px-6 py-3 text-sm font-medium rounded-lg ${
                       location.pathname.startsWith(item.path) ||
                       isAnyChildActive(item)
-                        ? "bg-[#3D4344] text-white"
+                        ? "bg-[#595C5C00] text-white"
                         : "text-gray-500 hover:bg-gray-100 transition-colors duration-300"
                     }`}
                     title={!isExpanded ? item.name : ""}
@@ -147,7 +144,7 @@ export default function Sidebar({ collapsed, toggleSidebar }) {
                   </button>
                   {isExpanded && expandedMenus[item.id] && (
                     <ul
-                      className={`ml-4 mt-1 space-y-1 ${
+                      className={`ml-3 mt-1 space-y-1 ${
                         isAnyChildActive(item) ? "bg-black pb-2" : ""
                       }`}
                     >
@@ -155,10 +152,10 @@ export default function Sidebar({ collapsed, toggleSidebar }) {
                         <li key={child.id}>
                           <Link
                             to={child.path}
-                            className={`flex items-center px-4 py-2 text-sm rounded-lg ${
+                            className={`flex items-center px-4 py-3 text-sm rounded-lg ${
                               location.pathname === child.path
                                 ? "bg-[#595C5C] text-white"
-                                : "text-gray-500 hover:bg-gray-100 transition-colors duration-300"
+                                : "text-white hover:bg-[#595C5C] transition-colors duration-300"
                             }`}
                           >
                             <child.icon className="h-4 w-4 mr-3" />
@@ -172,7 +169,7 @@ export default function Sidebar({ collapsed, toggleSidebar }) {
               ) : (
                 <Link
                   to={item.path}
-                  className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg ${
+                  className={`flex items-center px-6 py-3 text-sm font-medium rounded-lg ${
                     location.pathname.startsWith(item.path)
                       ? "bg-gray-800 text-white"
                       : "text-gray-500 hover:bg-gray-100 transition-colors duration-300"
@@ -193,6 +190,45 @@ export default function Sidebar({ collapsed, toggleSidebar }) {
           ))}
         </ul>
       </nav>
+
+      {/* Profile Section */}
+      <div className="p-4 border-t border-gray-200">
+        <div className="flex items-center space-x-3 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors">
+          {/* Profile Picture */}
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center">
+            <span className="text-white font-semibold text-sm">E</span>
+          </div>
+
+          {/* Profile Info */}
+          {isExpanded && (
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-900 truncate">
+                Evano
+              </p>
+              <p className="text-xs text-gray-500 truncate">Project Manager</p>
+            </div>
+          )}
+
+          {/* Dropdown Icon */}
+          {isExpanded && (
+            <svg
+              className={`w-4 h-4 transition-transform duration-200 ${
+                expandedMenus["profile"] ? "rotate-180" : ""
+              }`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M19 9l-7 7-7-7"
+              />
+            </svg>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
