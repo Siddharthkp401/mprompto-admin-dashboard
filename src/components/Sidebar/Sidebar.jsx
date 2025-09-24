@@ -11,8 +11,10 @@ import {
 } from "react-icons/md";
 import { IoSyncSharp as SyncIcon } from "react-icons/io5";
 import { BsBox as ManageProductsIcon } from "react-icons/bs";
+import { TbUserStar as UserStarIcon } from "react-icons/tb";
+import { HiOutlineSquares2X2 as AppearanceThemeIcon } from "react-icons/hi2";
+import { HiOutlineLightBulb as AssistedKnowledgeIcon } from "react-icons/hi";
 import { HiOutlineDocumentDuplicate } from "react-icons/hi2";
-import { TbChecks as CurationIcon } from "react-icons/tb";
 import { Link, useLocation } from "react-router-dom";
 
 const navItems = [
@@ -41,11 +43,25 @@ const navItems = [
         icon: ManageProductsIcon,
         path: "/manage-catalog/manage-products",
       },
+    ],
+  },
+  {
+    id: "manage-experience",
+    name: "Manage Experience",
+    icon: UserStarIcon,
+    path: "/manage-experience",
+    children: [
       {
-        id: "curation_quality_control",
-        name: "Curation & Quality Control",
-        icon: CurationIcon,
-        path: "/manage-catalog/curation-quality-control",
+        id: "appearance-theme",
+        name: "Appearance & Theme",
+        icon: AppearanceThemeIcon,
+        path: "/manage-experience/appearance-theme",
+      },
+      {
+        id: "assisted-knowledge",
+        name: "Assisted Knowledge",
+        icon: AssistedKnowledgeIcon,
+        path: "/manage-experience/assisted-knowledge",
       },
     ],
   },
@@ -55,8 +71,23 @@ const navItems = [
 
 export default function Sidebar({ collapsed, toggleSidebar }) {
   const [hovering, setHovering] = useState(false);
-  const [expandedMenus, setExpandedMenus] = useState({});
   const location = useLocation();
+
+  // Initialize expanded menus with currently active children
+  const [expandedMenus, setExpandedMenus] = useState(() => {
+    const initialExpanded = {};
+    navItems.forEach((item) => {
+      if (item.children) {
+        const hasActiveChild = item.children.some(
+          (child) => location.pathname === child.path
+        );
+        if (hasActiveChild) {
+          initialExpanded[item.id] = true;
+        }
+      }
+    });
+    return initialExpanded;
+  });
 
   // Determine if sidebar should be expanded
   const isExpanded = !collapsed || hovering;
@@ -101,12 +132,12 @@ export default function Sidebar({ collapsed, toggleSidebar }) {
               {item.children ? (
                 <div
                   className={
-                    isAnyChildActive(item) ? "bg-black rounded-lg" : ""
+                    isAnyChildActive(item) ? "bg-black rounded-lg" : "bg-[#F9F9F9]"
                   }
                 >
                   <button
                     onClick={() => toggleMenu(item.id)}
-                    className={`w-full flex items-center justify-between px-6 py-3 text-sm font-medium rounded-lg ${
+                    className={`w-full flex items-center justify-between gap-3 px-2 py-3 text-sm font-medium rounded-lg ${
                       location.pathname.startsWith(item.path) ||
                       isAnyChildActive(item)
                         ? "bg-[#595C5C00] text-white"
@@ -155,7 +186,7 @@ export default function Sidebar({ collapsed, toggleSidebar }) {
                             className={`flex items-center px-4 py-3 text-sm rounded-lg ${
                               location.pathname === child.path
                                 ? "bg-[#595C5C] text-white"
-                                : "text-white hover:bg-[#595C5C] transition-colors duration-300"
+                                : "text-gray-500 hover:bg-[#595C5C] transition-colors duration-300"
                             }`}
                           >
                             <child.icon className="h-4 w-4 mr-3" />

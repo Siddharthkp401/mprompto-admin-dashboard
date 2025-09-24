@@ -15,14 +15,16 @@ import BrandAndProfile from "./Tabs/Admin/components/BrandAndProfile";
 import TeamUserManagement from "./Tabs/Admin/components/TeamAndUserManagement";
 import SyncData from "./Tabs/ManageCatalog/SyncData";
 import ManageProducts from "./Tabs/ManageCatalog/ManageProducts";
-import CurationQualityControl from "./Tabs/ManageCatalog/CurationQualityControl";
 
 function App() {
   return (
     <Router>
       <div className="min-h-screen min-w-[100dvw] bg-white">
         <Routes>
-          <Route path="/" element={<Navigate to="/manage-catalog/sync" replace />} />
+          <Route
+            path="/"
+            element={<Navigate to="/manage-catalog/sync" replace />}
+          />
           <Route
             path="/dashboard"
             element={
@@ -84,14 +86,6 @@ function App() {
             element={
               <Layout activeTab="manage-catalog">
                 <ManageProducts />
-              </Layout>
-            }
-          />
-          <Route
-            path="/manage-catalog/curation-quality-control"
-            element={
-              <Layout activeTab="manage-catalog">
-                <CurationQualityControl />
               </Layout>
             }
           />

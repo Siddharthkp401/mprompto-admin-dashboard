@@ -1,21 +1,299 @@
-import React from "react";
-import { MdOutlineCheckCircle, MdOutlineError, MdOutlineWarning } from "react-icons/md";
+import { React, useState } from "react";
+import { BsSliders as Sliders } from "react-icons/bs";
+import { FaChevronLeft as ChevronLeft } from "react-icons/fa6";
+import { FaChevronRight as ChevronRight } from "react-icons/fa";
+import { IoMdMore as MoreVertical } from "react-icons/io";
+
+const stats = [
+  { id: "todo", label: "My To Do List", value: "02" },
+  { id: "all", label: "All Product", value: "50", active: true },
+  { id: "unprocessed", label: "Un-Processed", value: "48" },
+  { id: "inactive", label: "Inactive Product", value: "02" },
+  { id: "active", label: "Active Product", value: "48" },
+];
+
+const rows = [
+  {
+    id: 101,
+    product: "Running Shoes",
+    category: "Footwear",
+    processing: "PROCESSING",
+    ecommerce: "ACTIVE",
+  },
+  {
+    id: 102,
+    product: "Organic Oats",
+    category: "Food",
+    processing: "PROCESSING",
+    ecommerce: "ACTIVE",
+  },
+  {
+    id: 103,
+    product: "Sparkling Soda",
+    category: "Beverages",
+    processing: "PROCESSING",
+    ecommerce: "IN ACTIVE",
+  },
+  {
+    id: 104,
+    product: "Leather Wallet",
+    category: "Fashion Accessories",
+    processing: "PROCESSING",
+    ecommerce: "ACTIVE",
+  },
+];
 
 export default function ManageProducts() {
+  const [query, setQuery] = useState("");
+  const [rowsPerPage, setRowsPerPage] = useState("10");
+  const [page, setPage] = useState(1);
+
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Manage Products</h1>
-        <p className="text-gray-600">
-          Manage your products in the catalog.
-        </p>
+    <div className="space-y-6">
+      {/* Header */}
+      <div>
+        <h1 className="text-2xl font-semibold text-gray-800">Manage Product</h1>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-        <div className="text-center py-12">
-          <MdOutlineCheckCircle className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Manage Products</h3>
-          <p className="text-gray-600">This feature is coming soon.</p>
+      {/* Stat tiles */}
+      <div className="flex gap-6">
+        {stats.map((s) => (
+          <div
+            key={s.id}
+            className={`relative rounded-xl ${
+              s.active ? "bg-gray-800 text-white" : "bg-white text-gray-800"
+            } shadow-sm border ${
+              s.active ? "border-gray-800" : "border-gray-200"
+            } px-6 py-4 w-[260px] max-w-full`}
+          >
+            <div
+              className={`text-sm ${
+                s.active ? "text-white/80" : "text-gray-500"
+              }`}
+            >
+              {s.label}
+            </div>
+            <div
+              className={`mt-1 text-3xl font-bold ${
+                s.active ? "text-white" : "text-gray-900"
+              }`}
+            >
+              {s.value}
+            </div>
+            {s.active && (
+              <div className="absolute left-1/2 -bottom-1.5 h-3 w-3 -translate-x-1/2 rotate-45 rounded-sm bg-gray-800" />
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Search and filter bar */}
+      <div className="relative rounded-2xl bg-white p-4 shadow-sm border border-gray-200">
+        <div className="flex items-center">
+          <input
+            type="text"
+            placeholder="Search"
+            className="w-full h-12 rounded-lg border border-gray-300 px-4 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+          <button
+            className="ml-3 relative h-10 w-10 rounded-full border border-gray-200 !bg-white text-gray-500 hover:!bg-gray-50"
+            title="Filters"
+            style={{ backgroundColor: "white", color: "#6b7280" }}
+          >
+            <Sliders
+              size={16}
+              color="#6b7280"
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            />
+          </button>
+        </div>
+
+        {/* Table */}
+        <div className="mt-4 overflow-hidden rounded-xl border border-gray-200">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gray-50">
+                <th className="w-14 px-6 py-4 text-left">
+                  <span className="sr-only">Select</span>
+                </th>
+                <th className="px-6 py-4 text-left text-gray-600 font-medium">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-400">↕</span>
+                    Product ID
+                  </div>
+                </th>
+                <th className="px-6 py-4 text-left text-gray-600 font-medium">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-400">↕</span>
+                    Product
+                  </div>
+                </th>
+                <th className="px-6 py-4 text-left text-gray-600 font-medium">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-400">↕</span>
+                    Category
+                  </div>
+                </th>
+                <th className="px-6 py-4 text-left text-gray-600 font-medium">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-400">↕</span>
+                    Processing Status
+                  </div>
+                </th>
+                <th className="px-6 py-4 text-left text-gray-600 font-medium">
+                  <div className="flex items-center gap-2">
+                    <span className="text-gray-400">↕</span>
+                    Ecommerce Status
+                  </div>
+                </th>
+                <th className="px-6 py-4 text-left text-gray-600 font-medium">
+                  Action
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white">
+              {rows.map((r) => (
+                <tr key={r.id} className="border-t border-gray-200">
+                  <td className="px-6 py-4">
+                    <input
+                      type="checkbox"
+                      className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                      aria-label={`Select product ${r.id}`}
+                    />
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="text-gray-800">{r.id}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="text-gray-800">{r.product}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="text-gray-800">{r.category}</span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
+                      {r.processing}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    {r.ecommerce === "ACTIVE" ? (
+                      <span className="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                        ACTIVE
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700">
+                        IN ACTIVE
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4">
+                    <button
+                      className="relative h-9 w-9 rounded-lg border border-gray-200 text-gray-500 hover:!bg-gray-50"
+                      style={{ backgroundColor: "white", color: "#6b7280" }}
+                    >
+                      <MoreVertical
+                        size={16}
+                        color="#6b7280"
+                        style={{
+                          position: "absolute",
+                          top: "50%",
+                          left: "50%",
+                          transform: "translate(-50%, -50%)",
+                        }}
+                      />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Bottom controls */}
+          <div className="flex items-center justify-between px-6 py-4">
+            {/* Rows per page */}
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-700">Rows per page:</span>
+              <div className="relative">
+                <select
+                  value={rowsPerPage}
+                  onChange={(e) => setRowsPerPage(e.target.value)}
+                  className="h-9 rounded-lg border border-gray-300 bg-white px-3 pr-8 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Pagination */}
+            <div className="flex items-center gap-2">
+              <button
+                className="relative h-9 w-9 rounded-lg border border-gray-200 text-gray-600 hover:!bg-gray-50"
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                aria-label="Previous page"
+                style={{ backgroundColor: "white", color: "#4b5563" }}
+              >
+                <ChevronLeft
+                  size={16}
+                  color="#4b5563"
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                />
+              </button>
+              {[1, 2, 3, 4, 5].map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  className={`h-9 w-9 rounded-lg text-sm ${
+                    page === p
+                      ? "bg-blue-500 text-white"
+                      : "border border-gray-200 text-gray-700 hover:bg-gray-50"
+                  }`}
+                >
+                  {p}
+                </button>
+              ))}
+              <span className="px-1 text-gray-500">…</span>
+              {[6, 7].map((p) => (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  className="h-9 w-9 rounded-lg border border-gray-200 text-sm text-gray-700 hover:bg-gray-50"
+                >
+                  {p}
+                </button>
+              ))}
+              <button
+                className="relative h-9 w-9 rounded-lg border border-gray-200 text-gray-600 hover:!bg-gray-50"
+                onClick={() => setPage((p) => p + 1)}
+                aria-label="Next page"
+                style={{ backgroundColor: "white", color: "#4b5563" }}
+              >
+                <ChevronRight
+                  size={16}
+                  color="#4b5563"
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                  }}
+                />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

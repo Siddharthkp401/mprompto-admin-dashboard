@@ -2,7 +2,9 @@ import { useState } from "react";
 import { LuDownload as DownloadIcon } from "react-icons/lu";
 import { CiFileOn as FileIcon } from "react-icons/ci";
 import { IoIosCheckmarkCircleOutline as CheckIcon } from "react-icons/io";
+import { FaCheck as CheckIcon2 } from "react-icons/fa";
 import { RxCross2 as XIcon } from "react-icons/rx";
+import { MdKeyboardDoubleArrowRight as ArrowIcon } from "react-icons/md";
 import Papa from "papaparse";
 import Card from "../../components/ui/Card";
 import Button from "../../components/ui/Button";
@@ -17,6 +19,7 @@ export default function SyncData() {
   const [csvFile, setCsvFile] = useState(null);
   const [csvColumns, setCsvColumns] = useState([]);
   const [csvFirstRowData, setCsvFirstRowData] = useState({});
+  const [lastSyncDate, setLastSyncDate] = useState(null);
 
   const steps = [
     {
@@ -136,6 +139,55 @@ export default function SyncData() {
     return `${(size / (1024 * 1024 * 1024)).toFixed(2)} GB`;
   };
 
+  const showCancelButton = activeStep === 1 && lastSyncDate || activeStep > 1;
+
+  if (lastSyncDate) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-semibold text-gray-800">Sync</h1>
+        </div>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between rounded-full border border-gray-200 bg-white px-6 py-4 shadow-sm">
+            <div className="flex items-center gap-4">
+              <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center mr-3">
+                <CheckIcon2 className="w-4 h-4 text-white" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-700">
+                  Last Synced CSV By ·{" "}
+                  <span className="font-semibold text-gray-900">
+                    2025-09-15 12:45 PM
+                  </span>
+                </p>
+              </div>
+            </div>
+            <button className="rounded-full bg-cyan-600 px-6 py-2 text-sm font-medium text-white shadow-sm hover:bg-cyan-700">
+              Upload CSV
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between rounded-3xl border border-gray-200 bg-white px-6 py-6 shadow-sm">
+            <div>
+              <h3 className="text-base font-semibold text-gray-800">
+                Do you need to sync as a new?
+              </h3>
+              <p className="mt-1 text-sm text-gray-500">
+                Select the layout where this file&apos;s records will be stored.
+              </p>
+            </div>
+            <button
+              // onClick={handleStartSync}
+              className="rounded-full border border-cyan-600 px-6 py-2 text-sm font-medium text-cyan-600 hover:bg-cyan-50"
+            >
+              Start Sync Process
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-1 space-y-6 pb-24">
@@ -151,35 +203,41 @@ export default function SyncData() {
           {steps.map((step, index) => (
             <div key={step.id} className="flex items-center flex-1">
               <div
-                className={`flex items-center justify-center w-full p-4 rounded-lg border-2 ${
+                className={`flex items-center w-full p-4 rounded-lg border-2 ${
                   step.active
                     ? "bg-[#188FB7] text-white border-[#188FB7]"
                     : "bg-gray-100 text-gray-500 border-gray-200"
                 }`}
               >
                 <div className="flex items-center">
-                  <div className="w-6 h-6 rounded-full bg-white bg-opacity-20 flex items-center justify-center mr-3">
-                    <div className="w-2 h-2 rounded-full bg-current"></div>
-                  </div>
-                  <div>
-                    <div className="font-medium">{step.title}</div>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center font-medium">
+                      <div
+                        className={`w-6 h-6 rounded-full bg-[#188FB7] border border-white flex items-center justify-center mr-3 ${
+                          step.active || step.id < activeStep
+                            ? "bg-[#188FB7] border-[#188FB7]"
+                            : "bg-gray-300 border-gray-300"
+                        }`}
+                      >
+                        {step.id < activeStep ? (
+                          <CheckIcon2 className="w-3 h-3 text-white" />
+                        ) : (
+                          <div className="w-2 h-2 rounded-full bg-white"></div>
+                        )}
+                      </div>
+                      {step.title}
+                    </div>
                     <div className="text-xs opacity-75">{step.subtitle}</div>
                   </div>
                 </div>
               </div>
               {index < steps.length - 1 && (
                 <div className="flex items-center px-4">
-                  <svg
-                    className="w-6 h-6 text-gray-300"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                  <ArrowIcon
+                    className={`w-8 h-8 ${
+                      step.id < activeStep ? "text-[#188FB7]" : "text-gray-300"
+                    }`}
+                  />
                 </div>
               )}
             </div>
@@ -339,12 +397,14 @@ export default function SyncData() {
       {/* Sticky Action Buttons */}
       <div className="fixed bottom-0 left-[260px] right-0 bg-white border-t border-gray-200 px-6 py-4 shadow-lg">
         <div className="max-w-7xl mx-auto flex justify-center space-x-4">
-          <Button
-            onClick={handleCancel}
-            className="px-8 py-2 border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-lg"
-          >
-            {activeStep === 1 ? "Cancel" : "Previous"}
-          </Button>
+          {showCancelButton && (
+              <Button
+                onClick={handleCancel}
+                className="px-8 py-2 border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 rounded-lg"
+              >
+                {activeStep === 1 ? "Cancel" : "Previous"}
+              </Button>
+            )}
           <Button
             disabled={steps[activeStep - 1].disableAction}
             onClick={handleNext}

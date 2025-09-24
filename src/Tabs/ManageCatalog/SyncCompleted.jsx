@@ -13,7 +13,7 @@ export default function SyncCompleted() {
     inserts: 48,
     updated: 2,
     skipped: 0,
-  }
+  };
 
   const syncedData = [
     {
@@ -54,10 +54,12 @@ export default function SyncCompleted() {
       {isSyncing ? (
         <>
           {/* Warning Message */}
-          <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-8">
+          <div className="bg-[#FFA5001A] border border-orange-200 rounded-lg p-4 mb-8">
             <div className="flex items-center">
-              <AlertIcon className="h-5 w-5 text-orange-500 mr-3" />
-              <span className="text-orange-800 font-medium">
+              <div className="w-8 h-8 bg-[#FFA500] rounded-full flex items-center justify-center mr-3">
+                <AlertIcon className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-[#3D4344] font-medium">
                 Data is syncing, please do not refresh the page.
               </span>
             </div>
