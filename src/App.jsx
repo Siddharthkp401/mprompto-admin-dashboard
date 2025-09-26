@@ -15,6 +15,8 @@ import BrandAndProfile from "./Tabs/Admin/components/BrandAndProfile";
 import TeamUserManagement from "./Tabs/Admin/components/TeamAndUserManagement";
 import SyncData from "./Tabs/ManageCatalog/SyncData";
 import ManageProducts from "./Tabs/ManageCatalog/ManageProducts";
+import AppearanceTheme from "./Tabs/ManageExperience/AppearanceTheme";
+import AssistedKnowledge from "./Tabs/ManageExperience/AssistedKnowledge";
 
 function App() {
   return (
@@ -86,6 +88,22 @@ function App() {
             element={
               <Layout activeTab="manage-catalog">
                 <ManageProducts />
+              </Layout>
+            }
+          />
+          <Route
+            path="/manage-experience/appearance-theme"
+            element={
+              <Layout activeTab="manage-experience">
+                <AppearanceTheme />
+              </Layout>
+            }
+          />
+          <Route
+            path="/manage-experience/assisted-knowledge"
+            element={
+              <Layout activeTab="manage-experience">
+                <AssistedKnowledge />
               </Layout>
             }
           />

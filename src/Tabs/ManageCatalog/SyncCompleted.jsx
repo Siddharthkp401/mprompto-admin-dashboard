@@ -3,10 +3,12 @@ import { FiAlertTriangle as AlertIcon } from "react-icons/fi";
 import { FaCheck as CheckIcon } from "react-icons/fa";
 import loaderImage from "../../assets/loader-skeleton.gif";
 import Select from "../../components/ui/Select";
+import SyncError from "./SyncError";
 
 export default function SyncCompleted() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isSyncError, setIsSyncError] = useState(true);
 
   const syncStats = {
     totalRecords: 50,
@@ -48,6 +50,10 @@ export default function SyncCompleted() {
       setIsSyncing(false);
     }, 3000);
   }, []);
+
+  if (isSyncError) {
+    return <SyncError />;
+  }
 
   return (
     <div>

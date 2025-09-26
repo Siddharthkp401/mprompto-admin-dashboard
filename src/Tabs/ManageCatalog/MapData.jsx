@@ -60,14 +60,14 @@ export default function MapData({ csvColumns = [], csvFirstRowData = {} }) {
       <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="bg-gray-50">
-              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800 border-r border-gray-200">
+            <tr className="bg-[#F7F9FE]">
+              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">
                 Fields in System
               </th>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800 border-r border-gray-200">
+              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">
                 Columns in File (CSV)
               </th>
-              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800 border-r border-gray-200"></th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800"></th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-gray-800">
                 Columns Row Data
               </th>
@@ -77,14 +77,14 @@ export default function MapData({ csvColumns = [], csvFirstRowData = {} }) {
             {systemFields.map((field) => (
               <tr key={field.key} className="border-b border-gray-200">
                 {/* System Field */}
-                <td className="px-6 py-4 border-r border-gray-200">
+                <td className="px-6 py-4">
                   <span className="text-gray-700 font-medium">
                     {field.label}
                   </span>
                 </td>
 
                 {/* CSV Column Mapping */}
-                <td className="px-6 py-4 border-r border-gray-200">
+                <td className="px-6 py-4">
                   <div className="space-y-2">
                     <Select
                       value={fieldMappings[field.key]}
@@ -97,11 +97,11 @@ export default function MapData({ csvColumns = [], csvFirstRowData = {} }) {
                     />
                   </div>
                 </td>
-                <td className="px-6 py-4 border-r border-gray-200">
+                <td className="px-6 py-4">
                   <input
                     placeholder="Replace Empty Values"
                     type="text"
-                    className="w-full"
+                    className="w-full border border-[#0000007D] rounded-md px-2 py-1 text-center text-sm"
                   />
                 </td>
 
