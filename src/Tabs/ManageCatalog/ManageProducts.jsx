@@ -1,8 +1,9 @@
-import { React, useState } from "react";
+import { React, useState, useMemo } from "react";
 import { BsSliders as Sliders } from "react-icons/bs";
 import { FaChevronLeft as ChevronLeft } from "react-icons/fa6";
 import { FaChevronRight as ChevronRight } from "react-icons/fa";
 import { IoMdMore as MoreVertical } from "react-icons/io";
+import { useTable, useSortBy, usePagination } from "react-table";
 
 const stats = [
   { id: "todo", label: "My To Do List", value: "02" },
@@ -12,7 +13,7 @@ const stats = [
   { id: "active", label: "Active Product", value: "48" },
 ];
 
-const rows = [
+const data = [
   {
     id: 101,
     product: "Running Shoes",
@@ -45,8 +46,134 @@ const rows = [
 
 export default function ManageProducts() {
   const [query, setQuery] = useState("");
-  const [rowsPerPage, setRowsPerPage] = useState("10");
-  const [page, setPage] = useState(1);
+
+  const columns = useMemo(
+    () => [
+      {
+        id: "select",
+        Header: () => <span className="sr-only">Select</span>,
+        Cell: () => (
+          <input
+            type="checkbox"
+            className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+            aria-label="Select row"
+          />
+        ),
+        disableSortBy: true,
+      },
+      {
+        accessor: "id",
+        Header: ({ column }) => (
+          <div className="flex items-center gap-2">
+            <span className="text-gray-400">↕</span>
+            Product ID
+          </div>
+        ),
+        Cell: ({ value }) => <span className="text-gray-800">{value}</span>,
+      },
+      {
+        accessor: "product",
+        Header: ({ column }) => (
+          <div className="flex items-center gap-2">
+            <span className="text-gray-400">↕</span>
+            Product
+          </div>
+        ),
+        Cell: ({ value }) => <span className="text-gray-800">{value}</span>,
+      },
+      {
+        accessor: "category",
+        Header: ({ column }) => (
+          <div className="flex items-center gap-2">
+            <span className="text-gray-400">↕</span>
+            Category
+          </div>
+        ),
+        Cell: ({ value }) => <span className="text-gray-800">{value}</span>,
+      },
+      {
+        accessor: "processing",
+        Header: ({ column }) => (
+          <div className="flex items-center gap-2">
+            <span className="text-gray-400">↕</span>
+            Processing Status
+          </div>
+        ),
+        Cell: ({ value }) => (
+          <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
+            {value}
+          </span>
+        ),
+      },
+      {
+        accessor: "ecommerce",
+        Header: ({ column }) => (
+          <div className="flex items-center gap-2">
+            <span className="text-gray-400">↕</span>
+            Ecommerce Status
+          </div>
+        ),
+        Cell: ({ value }) => {
+          return value === "ACTIVE" ? (
+            <span className="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+              ACTIVE
+            </span>
+          ) : (
+            <span className="inline-flex items-center rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700">
+              IN ACTIVE
+            </span>
+          );
+        },
+      },
+      {
+        id: "actions",
+        Header: "Action",
+        Cell: () => (
+          <button
+            className="relative h-9 w-9 rounded-lg border border-gray-200 text-gray-500 hover:!bg-gray-50"
+            style={{ backgroundColor: "white", color: "#6b7280" }}
+          >
+            <MoreVertical
+              size={16}
+              color="#6b7280"
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            />
+          </button>
+        ),
+        disableSortBy: true,
+      },
+    ],
+    []
+  );
+
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    page,
+    nextPage,
+    previousPage,
+    canNextPage,
+    canPreviousPage,
+    pageOptions,
+    state: { pageIndex, pageSize },
+    setPageSize,
+    gotoPage,
+    prepareRow,
+  } = useTable(
+    {
+      columns,
+      data,
+      initialState: { pageSize: 10 },
+    },
+    useSortBy,
+    usePagination
+  );
 
   return (
     <div className="space-y-6">
@@ -117,101 +244,38 @@ export default function ManageProducts() {
 
         {/* Table */}
         <div className="mt-4 overflow-hidden rounded-xl border border-gray-200">
-          <table className="w-full">
+          <table {...getTableProps()} className="w-full">
             <thead>
-              <tr className="bg-gray-50">
-                <th className="w-14 px-6 py-4 text-left">
-                  <span className="sr-only">Select</span>
-                </th>
-                <th className="px-6 py-4 text-left text-gray-600 font-medium">
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-400">↕</span>
-                    Product ID
-                  </div>
-                </th>
-                <th className="px-6 py-4 text-left text-gray-600 font-medium">
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-400">↕</span>
-                    Product
-                  </div>
-                </th>
-                <th className="px-6 py-4 text-left text-gray-600 font-medium">
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-400">↕</span>
-                    Category
-                  </div>
-                </th>
-                <th className="px-6 py-4 text-left text-gray-600 font-medium">
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-400">↕</span>
-                    Processing Status
-                  </div>
-                </th>
-                <th className="px-6 py-4 text-left text-gray-600 font-medium">
-                  <div className="flex items-center gap-2">
-                    <span className="text-gray-400">↕</span>
-                    Ecommerce Status
-                  </div>
-                </th>
-                <th className="px-6 py-4 text-left text-gray-600 font-medium">
-                  Action
-                </th>
-              </tr>
-            </thead>
-            <tbody className="bg-white">
-              {rows.map((r) => (
-                <tr key={r.id} className="border-t border-gray-200">
-                  <td className="px-6 py-4">
-                    <input
-                      type="checkbox"
-                      className="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      aria-label={`Select product ${r.id}`}
-                    />
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-gray-800">{r.id}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-gray-800">{r.product}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="text-gray-800">{r.category}</span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="inline-flex items-center rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-700">
-                      {r.processing}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    {r.ecommerce === "ACTIVE" ? (
-                      <span className="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
-                        ACTIVE
-                      </span>
-                    ) : (
-                      <span className="inline-flex items-center rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-700">
-                        IN ACTIVE
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    <button
-                      className="relative h-9 w-9 rounded-lg border border-gray-200 text-gray-500 hover:!bg-gray-50"
-                      style={{ backgroundColor: "white", color: "#6b7280" }}
+              {headerGroups.map((headerGroup, groupIndex) => (
+                <tr key={groupIndex} className="bg-gray-50">
+                  {headerGroup.headers.map((column, colIndex) => (
+                    <th
+                      key={colIndex}
+                      className={`px-6 py-4 text-left text-gray-600 font-medium ${
+                        column.id === "select" ? "w-14" : ""
+                      }`}
                     >
-                      <MoreVertical
-                        size={16}
-                        color="#6b7280"
-                        style={{
-                          position: "absolute",
-                          top: "50%",
-                          left: "50%",
-                          transform: "translate(-50%, -50%)",
-                        }}
-                      />
-                    </button>
-                  </td>
+                      {column.render("Header")}
+                    </th>
+                  ))}
                 </tr>
               ))}
+            </thead>
+            <tbody {...getTableBodyProps()} className="bg-white">
+              {page.map((row, index) => {
+                prepareRow(row);
+                return (
+                  <tr key={index} className="border-t border-gray-200">
+                    {row.cells.map((cell, cellIndex) => {
+                      return (
+                        <td key={cellIndex} className="px-6 py-4">
+                          {cell.render("Cell")}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
 
@@ -222,8 +286,10 @@ export default function ManageProducts() {
               <span className="text-sm text-gray-700">Rows per page:</span>
               <div className="relative">
                 <select
-                  value={rowsPerPage}
-                  onChange={(e) => setRowsPerPage(e.target.value)}
+                  value={pageSize}
+                  onChange={(e) => {
+                    setPageSize(Number(e.target.value));
+                  }}
                   className="h-9 rounded-lg border border-gray-300 bg-white px-3 pr-8 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="10">10</option>
@@ -237,7 +303,8 @@ export default function ManageProducts() {
             <div className="flex items-center gap-2">
               <button
                 className="relative h-9 w-9 rounded-lg border border-gray-200 text-gray-600 hover:!bg-gray-50"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                onClick={() => previousPage()}
+                disabled={!canPreviousPage}
                 aria-label="Previous page"
                 style={{ backgroundColor: "white", color: "#4b5563" }}
               >
@@ -252,32 +319,37 @@ export default function ManageProducts() {
                   }}
                 />
               </button>
-              {[1, 2, 3, 4, 5].map((p) => (
+              {pageOptions.slice(0, 5).map((pageNum) => (
                 <button
-                  key={p}
-                  onClick={() => setPage(p)}
+                  key={pageNum}
+                  onClick={() => gotoPage(pageNum)}
                   className={`h-9 w-9 rounded-lg text-sm ${
-                    page === p
+                    pageIndex === pageNum
                       ? "bg-blue-500 text-white"
                       : "border border-gray-200 text-gray-700 hover:bg-gray-50"
                   }`}
                 >
-                  {p}
+                  {pageNum + 1}
                 </button>
               ))}
-              <span className="px-1 text-gray-500">…</span>
-              {[6, 7].map((p) => (
-                <button
-                  key={p}
-                  onClick={() => setPage(p)}
-                  className="h-9 w-9 rounded-lg border border-gray-200 text-sm text-gray-700 hover:bg-gray-50"
-                >
-                  {p}
-                </button>
-              ))}
+              {pageOptions.length > 5 && (
+                <>
+                  <span className="px-1 text-gray-500">…</span>
+                  {pageOptions.slice(-2).map((pageNum) => (
+                    <button
+                      key={pageNum}
+                      onClick={() => gotoPage(pageNum)}
+                      className="h-9 w-9 rounded-lg border border-gray-200 text-sm text-gray-700 hover:bg-gray-50"
+                    >
+                      {pageNum + 1}
+                    </button>
+                  ))}
+                </>
+              )}
               <button
                 className="relative h-9 w-9 rounded-lg border border-gray-200 text-gray-600 hover:!bg-gray-50"
-                onClick={() => setPage((p) => p + 1)}
+                onClick={() => nextPage()}
+                disabled={!canNextPage}
                 aria-label="Next page"
                 style={{ backgroundColor: "white", color: "#4b5563" }}
               >

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Button from "../../../../components/ui/Button";
+import Drawer from "../../../../components/ui/Drawer";
 import UploadBrandGuidelines from "./UploadBrandGuidelines";
 import ReviewExtractedData from "./ReviewExtractedData";
 import AnnotateFAQQuestions from "./AnnotateFAQQuestions";
@@ -25,6 +26,7 @@ const steps = [
 
 const BrandAndProfile = () => {
   const [activeStep, setActiveStep] = useState(1);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const handleNext = () => {
     if (activeStep < steps.length) setActiveStep(activeStep + 1);
@@ -125,17 +127,38 @@ const BrandAndProfile = () => {
                 Next: {steps[activeStep].title}
               </Button>
             ) : (
-              <Button
-                onClick={() => setActiveStep(4)}
-                size="lg"
-                className="px-8 bg-cyan-500 hover:bg-cyan-600"
-              >
-                Finish
-              </Button>
+              <>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="px-8 bg-transparent"
+                  onClick={() => setIsPreviewOpen(true)}
+                >
+                  Preview
+                </Button>
+                <Button
+                  onClick={() => setActiveStep(4)}
+                  size="lg"
+                  className="px-8 bg-cyan-500 hover:bg-cyan-600"
+                >
+                  Finish
+                </Button>
+              </>
             )}
           </div>
         </div>
       </div>
+
+      {/* Preview Drawer */}
+      <Drawer
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        title="Brand Profile Preview"
+        size="xl"
+        position="right"
+      >
+        <PreviewBrandProfile />
+      </Drawer>
     </div>
   );
 };

@@ -1,33 +1,93 @@
 import React from "react";
+import Select from "react-select";
 
-export default function Select({
+export default function CustomSelect({
   value,
   onChange,
   options,
   className,
   ...props
 }) {
+  const customStyles = {
+    control: (provided, state) => ({
+      ...provided,
+      width: "128px", // w-32
+      height: "32px", // h-8
+      minHeight: "32px",
+      fontSize: "12px", // text-xs
+      border: "1px solid #1994BE",
+      borderRadius: "6px", // rounded-md
+      paddingLeft: "8px", // pl-2
+      paddingRight: "24px", // pr-6
+      boxShadow: state.isFocused
+        ? "0 0 0 2px rgba(59, 130, 246, 0.5), 0px 0px 20px 0px rgba(0, 0, 0, 0.05)"
+        : "0px 0px 20px 0px rgba(0, 0, 0, 0.05)",
+      "&:hover": {
+        border: "1px solid #1994BE",
+      },
+    }),
+    valueContainer: (provided) => ({
+      ...provided,
+      padding: "0",
+      height: "100%",
+    }),
+    input: (provided) => ({
+      ...provided,
+      margin: "0",
+      padding: "0",
+    }),
+    indicatorSeparator: () => ({
+      display: "none",
+    }),
+    dropdownIndicator: (provided) => ({
+      ...provided,
+      padding: "0 8px",
+      color: "#1994BE",
+      "&:hover": {
+        color: "#1994BE",
+      },
+    }),
+    menu: (provided) => ({
+      ...provided,
+      zIndex: 50,
+      boxShadow:
+        "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+      borderRadius: "6px",
+    }),
+    option: (provided, state) => ({
+      ...provided,
+      fontSize: "12px",
+      padding: "8px 12px",
+      backgroundColor: state.isSelected
+        ? "#3B82F6"
+        : state.isFocused
+        ? "#EFF6FF"
+        : "white",
+      color: state.isSelected ? "white" : "#374151",
+      "&:hover": {
+        backgroundColor: state.isSelected ? "#3B82F6" : "#EFF6FF",
+      },
+    }),
+    singleValue: (provided) => ({
+      ...provided,
+      color: "#374151",
+      fontSize: "12px",
+    }),
+  };
+
+  const selectedOption = options.find((option) => option.value === value);
+
   return (
-    <select
-      value={value}
-      onChange={onChange}
-      className={`w-32 h-8 text-xs border border-[#1994BE] rounded-md pl-2 pr-6 focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none bg-white ${
-        className || ""
-      }`}
-      style={{
-        backgroundImage: `url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%231994BE'%3E%3Cpath fill-rule='evenodd' d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' clip-rule='evenodd'/%3E%3C/svg%3E")`,
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "right 6px center",
-        backgroundSize: "16px",
-        boxShadow: "0px 0px 20px 0px rgba(0, 0, 0, 0.05)",
-      }}
-      {...props}
-    >
-      {options.map((option) => (
-        <option key={option.value} value={option.value}>
-          {option.label}
-        </option>
-      ))}
-    </select>
+    <div className={className}>
+      <Select
+        value={selectedOption}
+        onChange={(option) => onChange(option?.value || "")}
+        options={options}
+        styles={customStyles}
+        isSearchable={false}
+        placeholder="Select..."
+        {...props}
+      />
+    </div>
   );
 }
